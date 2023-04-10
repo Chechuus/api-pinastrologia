@@ -6,8 +6,9 @@ use Exception;
 use App\Models\Contacto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Mail;
 //reglas
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Validator;
 
 class ContactoController extends Controller
@@ -50,6 +51,15 @@ class ContactoController extends Controller
             $contacto->con_descripcion =$request->descripcion;
                 
             $contacto->save();
+
+            $details = [
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido
+                ];
+            
+                Mail::to('ceciliaceb@gmail.com')->send(new \App\Mail\RegistroMail($details));
+
+         
             
             return response()->json([
                 'mensaje' => 'Registramos Exitosamente tus datos ' .$request->nombre,
